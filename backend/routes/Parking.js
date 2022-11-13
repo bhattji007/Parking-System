@@ -32,25 +32,33 @@ router.post('/in',async (req,res)=>{
     park.PlateNum=req.body.PlateNum;
    
     var datetime = new Date();
-
+    console.log('Slot before ',typeof(Slot));
+    let count=0;
     for (let i=0;i<Slot.length;i++){
         if (Slot[i]=='0'){
         park.slot=i
         Slot=Slot.replaceAt(i,'1');
         break;
         }
+        count++;
     }
-    try{
-    const savedSlot=await park.save();
-    res.json(savedSlot);
+    console.log(count,Slot.length)
+    if (count!=Slot.length){
+        try{
+            const savedSlot=await park.save();
+            res.json(savedSlot);
+            }
+            catch(err){
+                 res.json({message:err});
+            }
+            // Slot=Slot+'0';
+            rt.SLOT=Slot;
+            const saved=await rt.save();
+            console.log('Slot aftyer',Slot);
     }
-    catch(err){
-         res.json({message:err});
+    else{
+        return res.sendStatus(404)
     }
-    Slot=Slot+'0';
-    rt.SLOT=Slot;
-    const saved=await rt.save();
-    console.log(Slot);
  })
  router.post('/out',async (req,res)=>{
     let Slot= await gt();
@@ -58,7 +66,9 @@ router.post('/in',async (req,res)=>{
     const array=new Array();
     park.PlateNum=req.body.PlateNum;
     var datetime = new Date();
+    
     var find= await Park.findOneAndDelete({PlateNum:req.body.PlateNum})
+    if (find!=null){
     console.log(`parking `,find.slot)
     const s=find.slot
     Slot=Slot.replaceAt(s,'0');
@@ -67,6 +77,10 @@ router.post('/in',async (req,res)=>{
     res.json({message:'deleted'})
     const save=await array.save();
     console.log(save)
+    }
+    else{
+        res.json({message:'Parking Lot Empty'})
+    }
  })
 
  export default router ;

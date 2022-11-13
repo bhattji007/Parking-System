@@ -7,7 +7,7 @@ const router=express.Router();
 
 router.get('/',async (req,res)=>{
     try{
-        const vehicles=await Vehicle.find();  
+        const vehicles=await Park.find();  
         res.json(vehicles);
         }
         catch(err){
@@ -33,14 +33,19 @@ router.get('/:PlateNum',async (req,res)=>{
 
 router.post('/out',async (req,res)=>{
      res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-    const duplicate= await Vehicle.find({PlateNum:req.body.PlateNum}).exec();
+    var duplicate= await Park.find({PlateNum:`${req.body.PlateNum}`}).exec();
+    console.log('duplicate_out ',duplicate[0])
+//     duplicate.then(function (doc) {console.log(doc)});
 //     console.log(duplicate[0].Entry)
     if (duplicate[0]){
+     var dup= await Vehicle.find({PlateNum:`${req.body.PlateNum}`}).exec();
      deleteParking(req.body.PlateNum);
      const date=new Date();
-     const diff = date-duplicate[0].Entry
+     const diff = date-dup[0].Entry
+     console.log
      const fare=diff*.0000034
-     const filter ={PlateNum:duplicate[0].PlateNum}
+     console.log(fare)
+     const filter ={PlateNum:dup[0].PlateNum}
      const update={Exit:date,fare:fare}
     let doc = await Vehicle.findOneAndUpdate(filter,update,{new:true})
     console.log(doc);
@@ -54,11 +59,16 @@ router.post('/out',async (req,res)=>{
  router.post('/in',async (req,res)=>{
      res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
     const vehicle=new Vehicle
+    const park=new Park;
     vehicle.PlateNum=req.body.PlateNum;
     vehicle.Entry=new Date();
     vehicle.Exit=null;
     vehicle.fare=null;
     vehicle.Slot=null;
+    console.log(vehicle.PlateNum);
+    const duplicate= await Park.find({PlateNum:`${vehicle.PlateNum}`}).exec();
+    console.log('duplicate in',duplicate[0])
+    if(!duplicate[0]){
     let slot = await assignParking(req.body.PlateNum);
     vehicle.Slot=slot;
     try{
@@ -69,6 +79,10 @@ router.post('/out',async (req,res)=>{
          res.json({message:err});
     }
      }
+     else{
+        res.json({message:"Car has already entered in the system"});
+     }
+    }
 
  );
 
