@@ -32,7 +32,7 @@ router.get('/:PlateNum',async (req,res)=>{
 
 
 router.post('/out',async (req,res)=>{
-     res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+     res.header('Access-Control-Allow-Origin', '*');
     var duplicate= await Park.find({PlateNum:`${req.body.PlateNum}`}).exec();
     console.log('duplicate_out ',duplicate[0])
 //     duplicate.then(function (doc) {console.log(doc)});
@@ -57,7 +57,7 @@ router.post('/out',async (req,res)=>{
 }
  );
  router.post('/in',async (req,res)=>{
-     res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+     res.header('Access-Control-Allow-Origin', '*');
     const vehicle=new Vehicle
     const park=new Park;
     vehicle.PlateNum=req.body.PlateNum;

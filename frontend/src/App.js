@@ -1,63 +1,25 @@
 import "./App.css";
-import { useState } from "react";
+// import { useState } from "react";
+import React from 'react'
+import {Route, Routes,Link  } from 'react-router-dom';
+import { Check_in } from "./pages/Check_in.js";
+import { Check_out } from "./pages/Check_out.js";
+import { Home } from "./pages/Home.js";
 
-function App() {
-  const [plateNum, setPlate] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [mobileNumber, setMobileNumber] = useState("");
-  const [message, setMessage] = useState("");
-
-  let handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      let res = await fetch("http://localhost:5000/vehicle/in", {
-        method: "POST",
-        body: JSON.stringify({
-          PlateNum: plateNum,
-        }),
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        setPlate("");
-        // setEmail("");
-        // setMobileNumber("");
-        setMessage("car entered successfully");
-      } else {
-        setMessage("Some error occured");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+function App() { 
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={plateNum}
-          placeholder="PlateNum"
-          onChange={(e) => setPlate(e.target.value)}
-        />
-        {/* <input
-          type="text"
-          value={email}
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        /> */}
-        {/* <input
-          type="text"
-          value={mobileNumber}
-          placeholder="Mobile Number"
-          onChange={(e) => setMobileNumber(e.target.value)}
-        /> */}
-
-        <button type="submit">Send</button>
-
-        <div className="message">{message ? <p>{message}</p> : null}</div>
-      </form>
+    <Routes>
+    <Route path="/" element={<Home/>} />
+    <Route path="/check_in" element={<Check_in/>} />
+    <Route path="/check_out" element={<Check_out/>} />
+    <Route element={Error} />
+    </Routes>
     </div>
+   
+  
   );
+
 }
 
 // JSX

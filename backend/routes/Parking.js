@@ -26,6 +26,7 @@ router.get('/',async (req,res)=>{
 });
 
 router.post('/in',async (req,res)=>{
+    res.header('Access-Control-Allow-Origin', '*');
     let Slot= await gt();
     const park=new Park();
     const rt=new Array();
@@ -61,12 +62,12 @@ router.post('/in',async (req,res)=>{
     }
  })
  router.post('/out',async (req,res)=>{
+    res.header('Access-Control-Allow-Origin', '*');
     let Slot= await gt();
     const park=new Park();
     const array=new Array();
     park.PlateNum=req.body.PlateNum;
     var datetime = new Date();
-    
     var find= await Park.findOneAndDelete({PlateNum:req.body.PlateNum})
     if (find!=null){
     console.log(`parking `,find.slot)

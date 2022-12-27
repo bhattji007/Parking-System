@@ -5,10 +5,14 @@ import express from 'express';
  import ParkRoutes from './routes/Parking.js'
  import mongoose from 'mongoose';
  import dotenv from 'dotenv'
+ import cors from 'cors'
  dotenv.config()
  const app=express();
  const PORT=5000;
 
+
+
+ app.use(cors());
  app.use(bodyParser.json());
  app.use('/users',userRoutes)
  app.use('/vehicle',vehicleRoutes)
